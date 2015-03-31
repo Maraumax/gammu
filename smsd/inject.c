@@ -28,7 +28,6 @@ const char default_config[] = "/etc/gammu-smsdrc";
 NORETURN void version(void)
 {
 	printf("Gammu-smsd-inject version %s\n", GAMMU_VERSION);
-	printf("Built %s on %s using %s\n", __TIME__, __DATE__, GetCompiler());
 	printf("Compiled in features:\n");
 	printf("OS support:\n");
 #ifdef HAVE_SHM
@@ -58,7 +57,7 @@ NORETURN void version(void)
 	printf("\n");
 	printf("Copyright (C) 2003 - 2011 Michal Cihar <michal@cihar.com> and other authors.\n");
 	printf("\n");
-	printf("License GPLv2: GNU GPL version 2 <http://creativecommons.org/licenses/GPL/2.0/>.\n");
+	printf("License GPLv2: GNU GPL version 2 <https://spdx.org/licenses/GPL-2.0>.\n");
 	printf("This is free software: you are free to change and redistribute it.\n");
 	printf("There is NO WARRANTY, to the extent permitted by law.\n");
 	printf("\n");

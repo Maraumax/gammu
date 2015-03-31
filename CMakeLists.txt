@@ -15,9 +15,7 @@ if(COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
 
-if (NOT CLANG_COMPILER)
-    option (COVERAGE "Add flags for Coverage analysis" OFF)
-endif (NOT CLANG_COMPILER)
+option (COVERAGE "Add flags for Coverage analysis" OFF)
 
 option (ONLINE_TESTING "Enable testing of parts which use remote servers" OFF)
 option (PSQL_TESTING "Enable testing of PostgreSQL SMSD backend" OFF)
@@ -37,7 +35,7 @@ else (CMAKE_CROSSCOMPILING AND MINGW)
 endif (CMAKE_CROSSCOMPILING AND MINGW)
 
 # Set version
-set (GAMMU_VERSION "1.32.90" CACHE INTERNAL "")
+set (GAMMU_VERSION "1.35.90" CACHE INTERNAL "")
 string (REGEX REPLACE "^([0-9]*)\\.([0-9]*)\\.([0-9]*)$" "\\1" "GAMMU_VERSION_MAJOR" "${GAMMU_VERSION}")
 string (REGEX REPLACE "^([0-9]*)\\.([0-9]*)\\.([0-9]*)$" "\\2" "GAMMU_VERSION_MINOR" "${GAMMU_VERSION}")
 string (REGEX REPLACE "^([0-9]*)\\.([0-9]*)\\.([0-9]*)$" "\\3" "GAMMU_VERSION_PATCH" "${GAMMU_VERSION}")
@@ -74,6 +72,7 @@ include (MacroOptionalFindPackage)
 include (MacroAddDLL)
 include (MacroGammuOption)
 include (MacroTuneCompiler)
+include (GCoveralls)
 
 # WE use pkgconfig later
 find_package (PkgConfig)
@@ -238,6 +237,7 @@ macro_optional_find_package (Iconv)
 macro_optional_find_package (CURL)
 macro_optional_find_package (Glib)
 macro_optional_find_package (GObject)
+macro_optional_find_package (SystemD)
 
 # Gudev stuff
 pkg_check_modules(GUDEV gudev-1.0)
@@ -468,6 +468,7 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_MINGW OR
     #
     # Warnings related flags
     #
+    MACRO_TUNE_COMPILER("-O2")
     MACRO_TUNE_COMPILER("-Wall")
     MACRO_TUNE_COMPILER("-Werror-implicit-function-declaration")
     MACRO_TUNE_COMPILER("-Wno-deprecated-declarations")
@@ -486,8 +487,9 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_MINGW OR
 #   We need some typecasting (especially for iconv)
 #    MACRO_TUNE_COMPILER("-Wcast-qual")
 
-    # Does not work well
-    #MACRO_TUNE_COMPILER("-Wunreachable-code")
+    # Does not work well with default cases for enums
+    MACRO_TUNE_COMPILER("-Wunreachable-code")
+    MACRO_TUNE_COMPILER("-Wno-error=unreachable-code")
 
     # Just silent this for now, too much code to fix here
     MACRO_TUNE_COMPILER("-Wno-pointer-sign")
@@ -504,11 +506,10 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_MINGW OR
     endif (WIN32 AND NOT CYGWIN)
 
     # Enable coverage if requested
-    if (NOT CLANG_COMPILER)
-        if (COVERAGE)
-            MACRO_TUNE_COMPILER_LINKER("-fprofile-arcs -ftest-coverage")
-        endif (COVERAGE)
-    endif (NOT CLANG_COMPILER)
+    if (COVERAGE)
+        ENABLE_GCOVERALLS()
+        MACRO_TUNE_COMPILER_LINKER("--coverage")
+    endif (COVERAGE)
 
     # This is extremely noisy, use only in debug builds
     if (DEBUG)
@@ -591,7 +592,7 @@ else (BUILD_SHARED_LIBS)
 endif (BUILD_SHARED_LIBS)
 
 set (DOCS
-    README
+    README.rst
     ChangeLog
     COPYING
     )
@@ -835,7 +836,7 @@ set (CPACK_PACKAGE_VENDOR "Michal Čihař")
 set (CPACK_PACKAGE_CONTACT "Michal Čihař <michal@cihar.com>")
 set (CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/installer/description.txt")
 # On Mac OS, the file needs .txt extension, give it to them
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/README" "${CMAKE_CURRENT_BINARY_DIR}/readme.txt" COPYONLY)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/README.rst" "${CMAKE_CURRENT_BINARY_DIR}/readme.txt" COPYONLY)
 set (CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_BINARY_DIR}/readme.txt")
 set (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/installer/license.txt")
 set (CPACK_PACKAGE_VERSION_MAJOR "${GAMMU_VERSION_MAJOR}")

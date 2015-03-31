@@ -1600,6 +1600,14 @@ Other commands
     .. note:: Some phones will ask for PIN even with ``SOFT`` option.
     .. warning:: Some phones will reset user data on ``HARD`` reset.
 
+.. option:: setpower ON|OFF
+
+    .. versionadded:: 1.33.90
+
+    Turns off or on the phone.
+
+    .. note:: This is usually required for built in modules in notebooks.
+
 .. option:: screenshot filename
 
     Captures phone screenshot and saves it as filename. The extension is
@@ -1979,4 +1987,4 @@ hints for improving support for your phone in this log.
 
 See <http://wammu.eu/support/bugs/> for more information on reporting bugs.
 
-Please report bugs to `Gammu bug tracker <http://bugs.cihar.com/>`_.
+Please report bugs to `Gammu bug tracker <https://github.com/gammu/gammu/issues>`_.

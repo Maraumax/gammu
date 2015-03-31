@@ -88,8 +88,7 @@ static void ListNetworks(int argc, char *argv[])
 
 static void PrintVersion(void)
 {
-	printf(_("[Gammu version %s built %s on %s using %s]"),
-	       GAMMU_VERSION, __TIME__, __DATE__, GetCompiler());
+	printf(_("[Gammu version %s]"), GAMMU_VERSION);
 	printf("\n\n");
 }
 
@@ -331,7 +330,7 @@ static void Version(int argc UNUSED, char *argv[]UNUSED)
 
 	printf("\n");
 
-	printf("%s\n", _("License GPLv2: GNU GPL version 2 <http://creativecommons.org/licenses/GPL/2.0/>."));
+	printf("%s\n", _("License GPLv2: GNU GPL version 2 <https://spdx.org/licenses/GPL-2.0>."));
 
 	printf("%s\n", _("This is free software: you are free to change and redistribute it."));
 
@@ -358,10 +357,10 @@ static void RunBatch(int argc, char *argv[])
 	/**
 	 * @todo Allocate memory dynamically.
 	 */
-	char ln[2000];
+	char ln[2000], token;
 	size_t i, len;
 	ssize_t pos;
-	int j, c = 0, argsc;
+	int j, c = 0, argsc, n;
 	char *argsv[20];
 	gboolean origbatch;
 	char *name;
@@ -409,20 +408,57 @@ static void RunBatch(int argc, char *argv[])
 		}
 
 		/* split words into strings in the array argsv */
+		// added support for params that contain space(s) by adam-pl
 		i = 0;
 		j = 0;
 		argsc = 0;
 		len = strlen(ln);
+		token = 0x00;
 		while (i <= len) {
-			if (ln[i] == ' ' || ln[i] == 0) {
-				argsc++;
-				argsv[argsc] = malloc(i - j + 1);
-				strncpy(argsv[argsc], ln + j, i - j);
-				argsv[argsc][i - j] = 0;
-				j = i + 1;
-			}
-			i++;
+		  switch (token) {
+		    case 0x27:
+		    case 0x22: // ' or " char
+		      if (ln[i] == token) {
+		        //printf( "(B) Found start token at i=%zu\n", i);
+		        token = 0x00;
+		        n = i - j;
+		        argsc++;
+		        argsv[argsc] = malloc(n + 1);
+		        strncpy(argsv[argsc], ln + j, n);
+		        argsv[argsc][n] = 0;
+		        i++;
+		        j = i + 1;
+		        //printf( "n=%i, value=%s\n", n, argsv[argsc]);
+		      }
+		      break;
+		    default:
+		      if (ln[i] == ' ' || ln[i] == 0) {
+		        argsc++;
+		        n = i - j;
+		        argsv[argsc] = malloc(n + 1);
+		        strncpy(argsv[argsc], ln + j, n);
+		        argsv[argsc][n] = 0;
+		        j = i + 1;
+		      }
+		      else if (ln[i] == 0x27 || ln[i] == 0x22) {
+			      //printf( "(A) Found end token at i=%zu\n", i);
+			      token = ln[i];
+			      j = i + 1;
+		      }
+		      break;
+		  }
+		  i++;
 		}
+
+		/* show params list */
+		/*
+		if (argsc > 0) {
+		  printf( "\nSummary of params:\n");
+		  for (j = 1; j <= argsc; j++) {
+		    printf( "Parameter %i=[%s]\n", j, argsv[j]);
+		  }
+		}
+		*/
 		if (argsc > 0) {
 			/* we have some usable command and parameters, send them into standard processing */
 			printf ("----------------------------------------------------------------------------\n");
@@ -640,6 +676,7 @@ static GSM_Parameters Parameters[] = {
 	{"setbitmap",			1, 4, SetBitmap,		{H_Logo,0},			"DEALER text"},
 	{"copybitmap",		1, 3, CopyBitmap,		{H_Logo,0},			"inputfile [outputfile [OPERATOR|PICTURE|STARTUP|CALLER]]"},
 	{"presskeysequence",		1, 1, PressKeySequence,		{H_Other,0},			"mMnNpPuUdD+-123456789*0#gGrR<>[]hHcCjJfFoOmMdD@"},
+	{"setpower",			1, 1, SetPower,		{H_Other,0},		"ON|OFF"},
 #if defined(WIN32) || defined(HAVE_PTHREAD)
 	{"searchphone",		0, 1, SearchPhone,		{H_Other,0},			"[-debug]"},
 #endif

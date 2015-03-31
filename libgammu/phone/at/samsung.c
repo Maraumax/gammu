@@ -324,6 +324,7 @@ GSM_Error SAMSUNG_SetBitmap(GSM_StateMachine *s, GSM_Bitmap *Bitmap)
 
 	/* Remove extension from file name */
 	strncpy(name, DecodeUnicodeString(Bitmap->Name), 50);
+	name[49] = '\0';
 	if ((dot = strrchr(name, '.')) != NULL)
 		*dot = 0;
 
@@ -433,6 +434,7 @@ GSM_Error SAMSUNG_SetRingtone(GSM_StateMachine *s, GSM_Ringtone *Ringtone, int *
 
 	/* Remove extension from file name */
 	strncpy(name, DecodeUnicodeString(Ringtone->Name), 50);
+	name[49] = '\0';
 	if ((dot = strrchr(name, '.')) != NULL) *dot = 0;
 
 	crc = GetCRC(Ringtone->BinaryTone.Buffer, Ringtone->BinaryTone.Length);
@@ -460,13 +462,13 @@ GSM_Error SAMSUNG_CheckCalendar(GSM_StateMachine *s)
 
 	smprintf(s, "Checking for supported calendar commands\n");
 
-	ATGEN_WaitForAutoLen(s, "AT+SSHT?\r", 0x00, 10, ID_GetProtocol);
+	error = ATGEN_WaitForAutoLen(s, "AT+SSHT?\r", 0x00, 10, ID_GetProtocol);
 	if (error == ERR_NONE) {
 		Priv->SamsungCalendar = SAMSUNG_SSH;
 		return ERR_NONE;
 	}
 
-	ATGEN_WaitForAutoLen(s, "AT+ORGI?\r", 0x00, 10, ID_GetProtocol);
+	error = ATGEN_WaitForAutoLen(s, "AT+ORGI?\r", 0x00, 10, ID_GetProtocol);
 	if (error == ERR_NONE) {
 		Priv->SamsungCalendar = SAMSUNG_ORG;
 		return ERR_NONE;
@@ -808,10 +810,10 @@ GSM_Error SAMSUNG_GetCalendarStatus(GSM_StateMachine *s, GSM_CalendarStatus *Sta
 	if (Priv->SamsungCalendar == SAMSUNG_NONE) {
 		return ERR_NOTSUPPORTED;
 	} else if (Priv->SamsungCalendar == SAMSUNG_SSH) {
-		ATGEN_WaitForAutoLen(s, "AT+SSHI?\r", 0x00, 10, ID_GetCalendarNotesInfo);
+		error = ATGEN_WaitForAutoLen(s, "AT+SSHI?\r", 0x00, 10, ID_GetCalendarNotesInfo);
 		return error;
 	} else if (Priv->SamsungCalendar == SAMSUNG_ORG) {
-		ATGEN_WaitForAutoLen(s, "AT+ORGI?\r", 0x00, 10, ID_GetCalendarNotesInfo);
+		error = ATGEN_WaitForAutoLen(s, "AT+ORGI?\r", 0x00, 10, ID_GetCalendarNotesInfo);
 		return error;
 	}
 
@@ -1143,7 +1145,7 @@ GSM_Error SAMSUNG_GetCalendar(GSM_StateMachine *s, GSM_CalendarEntry *Note)
 		return ERR_BUG;
 	}
 
-	ATGEN_WaitFor(s, req, len, 0x00, 10, ID_GetCalendarNote);
+	error = ATGEN_WaitFor(s, req, len, 0x00, 10, ID_GetCalendarNote);
 	return error;
 }
 
@@ -1171,7 +1173,7 @@ GSM_Error SAMSUNG_DelCalendar(GSM_StateMachine *s, GSM_CalendarEntry *Note)
 		return ERR_BUG;
 	}
 
-	ATGEN_WaitFor(s, req, len, 0x00, 10, ID_DeleteCalendarNote);
+	error = ATGEN_WaitFor(s, req, len, 0x00, 10, ID_DeleteCalendarNote);
 	return error;
 }
 

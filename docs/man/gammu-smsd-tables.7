@@ -1,4 +1,6 @@
-.TH "GAMMU-SMSD-TABLES" "7" "November 21, 2012" "1.32.90" "Gammu"
+.\" Man page generated from reStructuredText.
+.
+.TH "GAMMU-SMSD-TABLES" "7" "March 02, 2015" "1.35.90" "Gammu"
 .SH NAME
 gammu-smsd-tables \- description of tables for database backends of gammu-smsd(1)
 .
@@ -28,8 +30,6 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.\" Man page generated from reStructeredText.
-.
 .sp
 The backends themselves are described in their sections, this document
 describes general database structure and required tables.
@@ -45,7 +45,7 @@ Received messages are stored in \fI\%inbox\fP table.
 .SH TRANSMITTING OF MESSAGES
 .sp
 Transmitted messages are read from table \fI\%outbox\fP and possible subsequent parts
-of the same message from \fI\%outbox_multipart\fP.
+of the same message from \fI\%outbox_multipart\fP\&.
 .SH DESCRIPTION OF TABLES
 .SS daemons
 .sp
@@ -100,7 +100,7 @@ you can use for marking, whether SMS was processed or not
 .SS outbox
 .sp
 Messages enqueued for sending should be placed in this table. If message
-is multipart, subsequent parts are stored in table \fI\%outbox_multipart\fP.
+is multipart, subsequent parts are stored in table \fI\%outbox_multipart\fP\&.
 .sp
 Fields description:
 .INDENT 0.0
@@ -119,12 +119,14 @@ Send message before specified time, can be used to limit messages from
 being sent in night. Default value is 23:59:59
 .sp
 New in version 1.29.90.
+
 .TP
 .B \fBSendAfter\fP (time)
 Send message after specified time, can be used to limit messages from
 being sent in night. Default value is 00:00:00
 .sp
 New in version 1.29.90.
+
 .TP
 .B \fBText\fP (text)
 SMS text encoded using hex values in proper coding. If you want to use
@@ -349,24 +351,40 @@ Not used by SMSD currently, included only for application usage.
 .sp
 Not used by SMSD currently, included only for application usage.
 .SH HISTORY OF DATABASE STRUCTURE
-.IP Note
+.sp
+\fBNOTE:\fP
+.INDENT 0.0
+.INDENT 3.5
 Testing versions (see \fIversioning\fP) do not have to keep same table
 structure as final releases. Bellow mentioned versions are for
 informational purposes only, you should always use stable versions in
 production environment.
-.RE
+.UNINDENT
+.UNINDENT
 .sp
 History of schema versions:
+.sp
+14
+.INDENT 0.0
+.INDENT 3.5
+Added \fBNetCode\fP and \fBNetName\fP fields.
+.sp
+Changed in version 1.34.0.
+
+.UNINDENT
+.UNINDENT
 .INDENT 0.0
 .TP
 .B 13
 Added \fBSendBefore\fP and \fBSendAfter\fP fields.
 .sp
 Changed in version 1.29.90.
+
 .sp
 Also PostgreSQL fields are now case sensitive (same as other backends).
 .sp
 Changed in version 1.29.93.
+
 .TP
 .B 12
 the changes only affect MySQL structure changing default values for
@@ -375,48 +393,57 @@ using triggers, to update to this version, just execute triggers
 definition at the end of SQL file.
 .sp
 Changed in version 1.28.94.
+
 .TP
 .B 11
 all fields for storing message text are no longer limited to 160 chars,
 but are arbitrary length text fields.
 .sp
 Changed in version 1.25.92.
+
 .TP
 .B 10
 \fBDeliveryDateTime\fP is now NULL when message is not delivered, added several
 indexes
 .sp
 Changed in version 1.22.95.
+
 .TP
 .B 9
 added sent/received counters to phones table
 .sp
 Changed in version 1.22.93.
+
 .TP
 .B 8
 Signal and battery state are now stored in database.
 .sp
 Changed in version 1.20.94.
+
 .TP
 .B 7
 Added \fBCreatorID\fP to several tables.
 .sp
 Changed in version 1.07.00.
+
 .TP
 .B 6
 Many fields in outbox can now be NULL.
 .sp
 Changed in version 1.06.00.
+
 .TP
 .B 5
 Introduced daemons table and various other changes.
 .sp
 Changed in version 1.03.00.
+
 .TP
 .B 3
 Introduced phones table and various other changes.
 .sp
 Changed in version 0.98.0.
+
 .UNINDENT
 .SH EXAMPLES
 .SS Creating tables
@@ -426,17 +453,23 @@ Gammu documentation (docs/sql). As well as some PHP scripts interacting with
 the database.
 .sp
 For example to create SQLite tables, issue following command:
+.INDENT 0.0
+.INDENT 3.5
 .sp
 .nf
 .ft C
 sqlite3 smsd.db < docs/sql/sqlite.sql
 .ft P
 .fi
+.UNINDENT
+.UNINDENT
 .SS Injecting a message using SQL
 .sp
 To send a message, you can either use \fIgammu\-smsd\-inject\fP, which does all the
 magic for you, or you can insert the message manually. The simplest example is
 short text message:
+.INDENT 0.0
+.INDENT 3.5
 .sp
 .nf
 .ft C
@@ -453,9 +486,13 @@ INSERT INTO outbox (
 );
 .ft P
 .fi
+.UNINDENT
+.UNINDENT
 .sp
 Please note usage of \fBTextDecoded\fP field, for \fBText\fP field, you would have
 to hex encode the unicode text:
+.INDENT 0.0
+.INDENT 3.5
 .sp
 .nf
 .ft C
@@ -472,20 +509,26 @@ INSERT INTO outbox (
 );
 .ft P
 .fi
+.UNINDENT
+.UNINDENT
 .SS Injecting long message using SQL
 .sp
 Inserting multipart messages is a bit more tricky, you need to construct also
-UDH header and store it hexadecimally written into UDH field. Unless you have
-a good reason to do this manually, use \fIgammu\-smsd\-inject\fP.
+UDH header and store it hexadecimally written into UDH field. Unless you have a
+good reason to do this manually, use \fIgammu\-smsd\-inject\fP, C library
+(\fBSMSD_InjectSMS()\fP) or Python library
+(\fBgammu.smsd.SMSD.InjectSMS()\fP).
 .sp
 For long text message, the UDH starts with \fB050003\fP followed by byte as a
-message reference (you can put anything there, but it should be different for
-each message, \fBD3\fP in following example), byte for number of messages (\fB02\fP
-in example, it should be unique for each message you send to same phone number)
-and byte for number of current message (\fB01\fP for first message, \fB02\fP for
-second, etc.).
+message reference (you can put any hex value there, but it should be different
+for each message, \fBD3\fP in following example), byte for number of messages
+(\fB02\fP in example, it should be unique for each message you send to same phone
+number) and byte for number of current message (\fB01\fP for first message,
+\fB02\fP for second, etc.).
 .sp
 For example long text message of two parts could look like following:
+.INDENT 0.0
+.INDENT 3.5
 .sp
 .nf
 .ft C
@@ -521,14 +564,19 @@ INSERT INTO outbox_multipart (
 )
 .ft P
 .fi
-.IP Note
+.UNINDENT
+.UNINDENT
+.sp
+\fBNOTE:\fP
+.INDENT 0.0
+.INDENT 3.5
 Adding UDH means that you have less space for text, in above example you
 can use only 153 characters in single message.
-.RE
+.UNINDENT
+.UNINDENT
 .SH AUTHOR
 Michal Čihař <michal@cihar.com>
 .SH COPYRIGHT
-2009-2012, Michal Čihař <michal@cihar.com>
+2009-2014, Michal Čihař <michal@cihar.com>
 .\" Generated by docutils manpage writer.
-.\" 
 .

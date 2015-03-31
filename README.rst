@@ -12,6 +12,21 @@ code was based on Gnokii <http://www.gnokii.org> and later MyGnokii
 Currently the project is lead by Michal Cihar <michal@cihar.com> with
 help of many contributors.
 
+.. image:: https://travis-ci.org/gammu/gammu.svg?branch=master
+    :alt: Build status
+    :target: https://travis-ci.org/gammu/gammu
+
+.. image:: https://hosted.weblate.org/widgets/gammu/-/svg-badge.svg
+    :alt: Translation status
+    :target: https://hosted.weblate.org/engage/gammu/?utm_source=widget
+
+.. image:: https://scan.coverity.com/projects/2890/badge.svg?flat=1
+    :alt: Coverity scan
+    :target: https://scan.coverity.com/projects/2890
+
+.. image:: https://www.bountysource.com/badge/team?team_id=23177&style=bounties_received
+    :alt: Bountysource
+    :target: https://www.bountysource.com/teams/gammu/issues?utm_source=Gammu&utm_medium=shield&utm_campaign=bounties_received
 
 More information
 ================

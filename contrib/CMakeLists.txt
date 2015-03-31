@@ -90,12 +90,21 @@ if (INSTALL_BASH_COMPLETION)
         )
 endif (INSTALL_BASH_COMPLETION)
 
+if (WITH_SYSTEMD)
+    install (
+        FILES init/gammu-smsd.service
+        DESTINATION "${SYSTEMD_SERVICES_INSTALL_DIR}"
+        COMPONENT "systemd"
+    )
+endif (WITH_SYSTEMD)
+
 if (INSTALL_LSB_INIT)
     install (
         FILES init/gammu-smsd.lsb
         DESTINATION "/etc/init.d"
         RENAME "gammu-smsd"
         COMPONENT "initscript"
+        PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
         )
 else (INSTALL_LSB_INIT)
     message (STATUS "Init script not being installed, install it by -DINSTALL_LSB_INIT=ON")
@@ -103,7 +112,7 @@ endif (INSTALL_LSB_INIT)
 
 if (INSTALL_UDEV_RULES)
     install (
-        FILES udev/45-nokiadku2.rules
+        FILES udev/69-gammu-acl.rules
         DESTINATION "/etc/udev/rules.d"
         COMPONENT "udev"
         )

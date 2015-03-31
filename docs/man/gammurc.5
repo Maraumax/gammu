@@ -1,4 +1,6 @@
-.TH "GAMMURC" "5" "November 21, 2012" "1.32.90" "Gammu"
+.\" Man page generated from reStructuredText.
+.
+.TH "GAMMURC" "5" "March 02, 2015" "1.35.90" "Gammu"
 .SH NAME
 gammurc \- gammu(1) configuration file
 .
@@ -28,8 +30,6 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.\" Man page generated from reStructeredText.
-.
 .SH SYNOPSIS
 .sp
 On Linux, MacOS X, BSD and other Unix\-like systems, the config file is
@@ -50,7 +50,7 @@ On Microsoft Windows:
 .IP 1. 3
 \fB$PROFILE\eApplication Data\egammurc\fP
 .IP 2. 3
-\fB.\egammurc\fP
+\fB\&.\egammurc\fP
 .UNINDENT
 .SH DESCRIPTION
 .sp
@@ -59,13 +59,13 @@ Gammu requires configuration to be able to properly talk to your phone.
 on runtime, see above for search paths.
 .sp
 You can use \fIgammu\-config\fP or \fIgammu\-detect\fP to generate
-configuration file or start from \fI\%Fully documented example\fP.
+configuration file or start from \fI\%Fully documented example\fP\&.
 .sp
 For hints about configuring your phone, you can check Gammu Phone
 Database <\fI\%http://wammu.eu/phones/\fP> to see what user users
 experienced.
 .sp
-This file use ini file syntax, see \fIini\fP.
+This file use ini file syntax, see \fIini\fP\&.
 .sp
 Configuration file for gammu can contain several sections \- \fB[gammu]\fP, \fB[gammu1]\fP,
 \fB[gammuN]\fP, ... Each section configures one connection setup and in default mode
@@ -130,7 +130,7 @@ AT commands connection for most of phones (this is not supported on Linux).
 OBEX (IrMC or file transfer) connection for most of phones.
 .TP
 .B \fBirdagnapbus\fP
-GNapplet based connection for Symbian phones, see \fIgnapplet\fP.
+GNapplet based connection for Symbian phones, see \fIgnapplet\fP\&.
 .UNINDENT
 .sp
 For Bluetooth connection use one of following:
@@ -146,22 +146,27 @@ AT commands connection for most of phones.
 OBEX (IrMC or file transfer) connection for most of phones.
 .TP
 .B \fBbluerfgnapbus\fP
-GNapplet based connection for Symbian phones, see \fIgnapplet\fP.
+GNapplet based connection for Symbian phones, see \fIgnapplet\fP\&.
 .TP
 .B \fBblues60\fP
-Connection to Series60 applet in S60 phones, see \fIs60\fP.
+Connection to Series60 applet in S60 phones, see \fIs60\fP\&.
 .sp
 New in version 1.29.90.
+
 .UNINDENT
-.IP "See also"
 .sp
+\fBSEE ALSO:\fP
+.INDENT 7.0
+.INDENT 3.5
 \fIfaq\-config\fP
-.RE
+.UNINDENT
+.UNINDENT
 .UNINDENT
 .INDENT 0.0
 .TP
 .B Device
 New in version 1.27.95.
+
 .sp
 Device node or address of phone. It depends on used connection.
 .sp
@@ -171,9 +176,20 @@ For \fBcables\fP or emulated serial ports, you enter device name (for example
 DKU\-2 and DKU\-5 cables on Windows, where the device is automatically detected
 from driver information and this parameters is ignored.
 .sp
+\fBNOTE:\fP
+.INDENT 7.0
+.INDENT 3.5
+Some USB modems expose several interfaces, in such cases Gammu works best
+with "User" one, you can find more information on
+<\fI\%http://www.dd\-wrt.com/wiki/index.php/Mobile_Broadband\fP>.
+.UNINDENT
+.UNINDENT
+.sp
 For \fBUSB\fP connections (currently only fbususb and dku2 on Linux), you can
 specify to which USB device Gammu should connect. You can either provide
 vendor/product IDs or device address on USB:
+.INDENT 7.0
+.INDENT 3.5
 .sp
 .nf
 .ft C
@@ -184,37 +200,48 @@ Device = 10             # Match device by usb device address
 Device = serial:123456  # Match device by serial string
 .ft P
 .fi
-.IP Note
+.UNINDENT
+.UNINDENT
+.sp
+\fBNOTE:\fP
+.INDENT 7.0
+.INDENT 3.5
 On Linux systems, you might lack permissions for some device nodes.
 You might need to be member of some group (eg. \fBplugdev\fP or
 \fBdialout\fP) or or add special udev rules to enable you access
 these devices as non\-root.
 .sp
 For Nokia phones you can put follofing file (also available in sources
-as \fBcontrib/udev/45\-nokiadku2.rules\fP) as
-\fB/etc/udev/rules.d/45\-nokiadku2.rules\fP:
+as \fBcontrib/udev/69\-gammu\-acl.rules\fP) as
+\fB/etc/udev/rules.d/69\-gammu\-acl.rules\fP:
+.INDENT 0.0
+.INDENT 3.5
 .sp
 .nf
 .ft C
-# udev rules file for nokia dku2 devices (udev >= 0.98)
-# Put it to /etc/udev/rules.d/ directory
-# Taken from http://git.savannah.gnu.org/cgit/gnokii.git/tree/Docs/sample/45\-nokiadku2.rules
+#
+# udev rule to give users access to USB device to be used by Gammu
 #
 
-ACTION!="add", GOTO="nokiadku2_rules_end"
-SUBSYSTEM=="usb", GOTO="nokiadku2_rules"
-# This one is for the old kernels
-SUBSYSTEM=="usb_device", GOTO="nokiadku2_rules"
-GOTO="nokiadku2_rules_end"
+ACTION!="add|change", GOTO="gammu_acl_rules_end"
 
-LABEL="nokiadku2_rules"
-ATTRS{manufacturer}=="Nokia", MODE="0660", GROUP="plugdev"
+KERNEL!="ttyACM[0\-9]*", GOTO="gammu_acl_rules_end"
+SUBSYSTEM!="tty", GOTO="gammu_acl_rules_end"
 
-LABEL="nokiadku2_rules_end"
+# Nokia devices
+ATTRS{manufacturer}=="Nokia", TAG+="uaccess"
+
+# Example for Sony Ericsson J108i Cedar
+# ATTRS{idVendor}=="0fce", ATTRS{idProduct}=="d14e", TAG+="uaccess"
+
+LABEL="gammu_acl_rules_end"
 
 .ft P
 .fi
-.RE
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.UNINDENT
 .sp
 In case your USB device appears as the serial port in the system (eg.
 \fB/dev/ttyACM0\fP on Linux or \fBCOM5:\fP on Windows), just use same setup as
@@ -232,6 +259,8 @@ For \fBIrDA\fP connections, this parameters is not used at all.
 .sp
 If IrDA does not work on Linux, you might need to bring up the interface and
 enable discovery (you need to run these commands as root):
+.INDENT 7.0
+.INDENT 3.5
 .sp
 .nf
 .ft C
@@ -239,10 +268,17 @@ ip l s dev irda0 up          # Enables irda0 device
 sysctl net.irda.discovery=1  # Enables device discovery on IrDA
 .ft P
 .fi
-.IP Note
+.UNINDENT
+.UNINDENT
+.sp
+\fBNOTE:\fP
+.INDENT 7.0
+.INDENT 3.5
 Native IrDA is not supported on Linux, you need to setup virtual
 serial port for it (eg. \fB/dev/ircomm0\fP) and use it same way as cable.
 This can be usually achieved by loading modules \fBircomm\-tty\fP and \fBirtty\-sir\fP:
+.INDENT 0.0
+.INDENT 3.5
 .sp
 .nf
 .ft C
@@ -250,16 +286,23 @@ modprobe ircomm\-tty
 modprobe irtty\-sir
 .ft P
 .fi
-.RE
-.IP "See also"
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.UNINDENT
 .sp
+\fBSEE ALSO:\fP
+.INDENT 7.0
+.INDENT 3.5
 \fIfaq\-config\fP
-.RE
+.UNINDENT
+.UNINDENT
 .UNINDENT
 .INDENT 0.0
 .TP
 .B Port
 Deprecated since version 1.27.95.
+
 .sp
 Alias for \fI\%Device\fP, kept for backward compatibility.
 .UNINDENT
@@ -317,15 +360,19 @@ option. This works only with some Nokia phones.
 .TP
 .B LogFile
 Path to file where information about communication will be stored.
-.IP Note
+.sp
+\fBNOTE:\fP
+.INDENT 7.0
+.INDENT 3.5
 For most debug levels (excluding \fBerrors\fP) the log file is overwritten on
 each execution.
-.RE
+.UNINDENT
+.UNINDENT
 .UNINDENT
 .INDENT 0.0
 .TP
 .B LogFormat
-Determines what all will be logged to \fBLogFile\fP. Possible values are:
+Determines what all will be logged to \fBLogFile\fP\&. Possible values are:
 .INDENT 7.0
 .TP
 .B \fBnothing\fP
@@ -384,14 +431,16 @@ these files automatically.
 Additional path where to search for data files. The default path is
 configured on build time (and defaults to \fB/usr/share/data/gammu\fP on Unix
 systems). Currently it is used only for searching files to upload to phone
-using \fIgammu install\fP.
+using \fIgammu install\fP\&.
 .UNINDENT
 .SH EXAMPLES
 .sp
-There is more complete example available in Gammu documentation, see \fIgammu\fP.
+There is more complete example available in Gammu documentation, see \fIgammu\fP\&.
 .SS Connection examples
 .sp
 Gammu configuration for Nokia phone using DLR\-3 cable:
+.INDENT 0.0
+.INDENT 3.5
 .sp
 .nf
 .ft C
@@ -400,9 +449,13 @@ device = /dev/ttyACM0
 connection = dlr3
 .ft P
 .fi
+.UNINDENT
+.UNINDENT
 .sp
 Gammu configuration for Sony\-Ericsson phone (or any other AT compatible
 phone) connected using USB cable:
+.INDENT 0.0
+.INDENT 3.5
 .sp
 .nf
 .ft C
@@ -411,9 +464,13 @@ device = /dev/ttyACM0
 connection = at
 .ft P
 .fi
+.UNINDENT
+.UNINDENT
 .sp
 Gammu configuration for Sony\-Ericsson (or any other AT compatible
 phone) connected using bluetooth:
+.INDENT 0.0
+.INDENT 3.5
 .sp
 .nf
 .ft C
@@ -422,8 +479,12 @@ device = B0:0B:00:00:FA:CE
 connection = blueat
 .ft P
 .fi
+.UNINDENT
+.UNINDENT
 .sp
 Gammu configuration for phone which needs to manually adjust Bluetooth channel to use channel 42:
+.INDENT 0.0
+.INDENT 3.5
 .sp
 .nf
 .ft C
@@ -432,12 +493,16 @@ device = B0:0B:00:00:FA:CE/42
 connection = blueat
 .ft P
 .fi
+.UNINDENT
+.UNINDENT
 .SS Working with multiple phones
 .sp
 Gammu can be configured for multiple phones (however only one connection
 is used at one time, you can choose which one to use with \fIgammu \-s\fP
 parameter). Configuration for phones on three serial ports would look
 like following:
+.INDENT 0.0
+.INDENT 3.5
 .sp
 .nf
 .ft C
@@ -454,9 +519,13 @@ device = /dev/ttyS2
 connection = at
 .ft P
 .fi
+.UNINDENT
+.UNINDENT
 .SS Fully documented example
 .sp
 You can find this sample file as \fBdocs/config/gammurc\fP in Gammu sources.
+.INDENT 0.0
+.INDENT 3.5
 .sp
 .nf
 .ft C
@@ -636,10 +705,11 @@ connection = fbusblue
 
 .ft P
 .fi
+.UNINDENT
+.UNINDENT
 .SH AUTHOR
 Michal Čihař <michal@cihar.com>
 .SH COPYRIGHT
-2009-2012, Michal Čihař <michal@cihar.com>
+2009-2014, Michal Čihař <michal@cihar.com>
 .\" Generated by docutils manpage writer.
-.\" 
 .

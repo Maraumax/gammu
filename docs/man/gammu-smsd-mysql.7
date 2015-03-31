@@ -1,4 +1,6 @@
-.TH "GAMMU-SMSD-MYSQL" "7" "November 21, 2012" "1.32.90" "Gammu"
+.\" Man page generated from reStructuredText.
+.
+.TH "GAMMU-SMSD-MYSQL" "7" "March 02, 2015" "1.35.90" "Gammu"
 .SH NAME
 gammu-smsd-mysql \- gammu-smsd(1) backend using MySQL database server as a message storage
 .
@@ -28,23 +30,23 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.\" Man page generated from reStructeredText.
-.
 .SH DESCRIPTION
 .sp
 MYSQL backend stores all data in a \fI\%MySQL\fP database server, which parameters are
 defined by configuration (see \fIgammu\-smsdrc\fP for description of configuration
 options).
 .sp
-For tables description see \fIgammu\-smsd\-tables\fP.
+For tables description see \fIgammu\-smsd\-tables\fP\&.
 .sp
-This backend is based on \fIgammu\-smsd\-sql\fP.
+This backend is based on \fIgammu\-smsd\-sql\fP\&.
 .SH CONFIGURATION
 .sp
 Before running \fIgammu\-smsd\fP you need to create necessary tables in the
 database, which is described bellow.
 .sp
 The configuration file then can look like:
+.INDENT 0.0
+.INDENT 3.5
 .sp
 .nf
 .ft C
@@ -54,14 +56,21 @@ driver = native_mysql
 host = localhost
 .ft P
 .fi
-.IP "See also"
+.UNINDENT
+.UNINDENT
 .sp
+\fBSEE ALSO:\fP
+.INDENT 0.0
+.INDENT 3.5
 \fIgammu\-smsdrc\fP
-.RE
+.UNINDENT
+.UNINDENT
 .SH PRIVILEGES
 .sp
 The user accessing the database does not need much privileges, the following
 privleges should be enough:
+.INDENT 0.0
+.INDENT 3.5
 .sp
 .nf
 .ft C
@@ -70,27 +79,29 @@ GRANT USAGE ON *.* TO \(aqsmsd\(aq@\(aqlocalhost\(aq IDENTIFIED BY \(aqpassword\
 GRANT SELECT, INSERT, UPDATE, DELETE ON \(gasmsd\(ga.* TO \(aqsmsd\(aq@\(aqlocalhost\(aq;
 .ft P
 .fi
-.IP Note
+.UNINDENT
+.UNINDENT
+.sp
+\fBNOTE:\fP
+.INDENT 0.0
+.INDENT 3.5
 For creating the SQL tables you need more privileges, especially for
 creating triggers, which are used for some functionality.
-.RE
+.UNINDENT
+.UNINDENT
 .SH CREATING TABLES
 .sp
 SQL script for creating tables in MySQL database:
+.INDENT 0.0
+.INDENT 3.5
 .sp
 .nf
 .ft C
-\-\- phpMyAdmin SQL Dump
-\-\- version 2.8.0.3
-\-\- http://www.phpmyadmin.net
 \-\- 
-\-\- Host: localhost
-\-\- Generation Time: Jun 10, 2006 at 11:08 PM
-\-\- Server version: 5.0.18
-\-\- PHP Version: 5.1.3
+\-\- Database for Gammu SMSD
 \-\- 
-\-\- Database: \(gasmsd\(ga
-\-\- 
+\-\- In case you get errors about not supported charset, please
+\-\- replace utf8mb4 with utf8.
 
 \-\- \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
 
@@ -101,7 +112,7 @@ SQL script for creating tables in MySQL database:
 CREATE TABLE \(gadaemons\(ga (
   \(gaStart\(ga text NOT NULL,
   \(gaInfo\(ga text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 \-\- 
 \-\- Dumping data for table \(gadaemons\(ga
@@ -116,13 +127,13 @@ CREATE TABLE \(gadaemons\(ga (
 
 CREATE TABLE \(gagammu\(ga (
   \(gaVersion\(ga integer NOT NULL default \(aq0\(aq
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 \-\- 
 \-\- Dumping data for table \(gagammu\(ga
 \-\- 
 
-INSERT INTO \(gagammu\(ga (\(gaVersion\(ga) VALUES (13);
+INSERT INTO \(gagammu\(ga (\(gaVersion\(ga) VALUES (14);
 
 \-\- \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
 
@@ -144,7 +155,7 @@ CREATE TABLE \(gainbox\(ga (
   \(gaRecipientID\(ga text NOT NULL,
   \(gaProcessed\(ga enum(\(aqfalse\(aq,\(aqtrue\(aq) NOT NULL default \(aqfalse\(aq,
   PRIMARY KEY \(gaID\(ga (\(gaID\(ga)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
 
 \-\- 
 \-\- Dumping data for table \(gainbox\(ga
@@ -177,7 +188,7 @@ CREATE TABLE \(gaoutbox\(ga (
   \(gaDeliveryReport\(ga enum(\(aqdefault\(aq,\(aqyes\(aq,\(aqno\(aq) default \(aqdefault\(aq,
   \(gaCreatorID\(ga text NOT NULL,
   PRIMARY KEY \(gaID\(ga (\(gaID\(ga)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 CREATE INDEX outbox_date ON outbox(SendingDateTime, SendingTimeOut);
 CREATE INDEX outbox_sender ON outbox(SenderID);
@@ -202,7 +213,7 @@ CREATE TABLE \(gaoutbox_multipart\(ga (
   \(gaID\(ga integer unsigned NOT NULL default \(aq0\(aq,
   \(gaSequencePosition\(ga integer NOT NULL default \(aq1\(aq,
   PRIMARY KEY (\(gaID\(ga, \(gaSequencePosition\(ga)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 \-\- 
 \-\- Dumping data for table \(gaoutbox_multipart\(ga
@@ -221,7 +232,7 @@ CREATE TABLE \(gapbk\(ga (
   \(gaName\(ga text NOT NULL,
   \(gaNumber\(ga text NOT NULL,
   PRIMARY KEY (\(gaID\(ga)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 \-\- 
 \-\- Dumping data for table \(gapbk\(ga
@@ -238,7 +249,7 @@ CREATE TABLE \(gapbk_groups\(ga (
   \(gaName\(ga text NOT NULL,
   \(gaID\(ga integer NOT NULL auto_increment,
   PRIMARY KEY \(gaID\(ga (\(gaID\(ga)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
 
 \-\- 
 \-\- Dumping data for table \(gapbk_groups\(ga
@@ -259,13 +270,15 @@ CREATE TABLE \(gaphones\(ga (
   \(gaSend\(ga enum(\(aqyes\(aq,\(aqno\(aq) NOT NULL default \(aqno\(aq,
   \(gaReceive\(ga enum(\(aqyes\(aq,\(aqno\(aq) NOT NULL default \(aqno\(aq,
   \(gaIMEI\(ga varchar(35) NOT NULL,
+  \(gaNetCode\(ga varchar(10) default \(aqERROR\(aq,
+  \(gaNetName\(ga varchar(35) default \(aqERROR\(aq,
   \(gaClient\(ga text NOT NULL,
   \(gaBattery\(ga integer NOT NULL DEFAULT \-1,
   \(gaSignal\(ga integer NOT NULL DEFAULT \-1,
   \(gaSent\(ga int NOT NULL DEFAULT 0,
   \(gaReceived\(ga int NOT NULL DEFAULT 0,
   PRIMARY KEY (\(gaIMEI\(ga)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 \-\- 
 \-\- Dumping data for table \(gaphones\(ga
@@ -298,7 +311,7 @@ CREATE TABLE \(gasentitems\(ga (
   \(gaRelativeValidity\(ga integer NOT NULL default \(aq\-1\(aq,
   \(gaCreatorID\(ga text NOT NULL,
   PRIMARY KEY (\(gaID\(ga, \(gaSequencePosition\(ga)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 CREATE INDEX sentitems_date ON sentitems(DeliveryDateTime);
 CREATE INDEX sentitems_tpmr ON sentitems(TPMR);
@@ -365,9 +378,15 @@ DELIMITER ;
 
 .ft P
 .fi
-.IP Note
+.UNINDENT
+.UNINDENT
+.sp
+\fBNOTE:\fP
+.INDENT 0.0
+.INDENT 3.5
 You can find the script in \fBdocs/sql/mysql.sql\fP as well.
-.RE
+.UNINDENT
+.UNINDENT
 .SH UPGRADING TABLES
 .sp
 The easiest way to upgrade database structure is to backup old one and start
@@ -379,7 +398,6 @@ For upgrading existing database, you can use changes described in
 .SH AUTHOR
 Michal Čihař <michal@cihar.com>
 .SH COPYRIGHT
-2009-2012, Michal Čihař <michal@cihar.com>
+2009-2014, Michal Čihař <michal@cihar.com>
 .\" Generated by docutils manpage writer.
-.\" 
 .

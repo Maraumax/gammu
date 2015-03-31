@@ -22,7 +22,7 @@ void PrintNoteType(GSM_CalendarNoteType Type)
 			printf("%s\n", _("Reminder (Date)"));
 			break;
 		case GSM_CAL_CALL:
-			printf("%s\n", _("Call"));
+			printf("%s\n", pgettext("Calendar note type", "Call"));
 			break;
 		case GSM_CAL_MEETING:
 			printf("%s\n", _("Meeting"));
@@ -712,6 +712,9 @@ void PrintToDo(GSM_ToDoEntry * ToDo)
 	PrintNoteType(ToDo->Type);
 	printf(LISTFORMAT, _("Priority"));
 	switch (ToDo->Priority) {
+		case GSM_Priority_INVALID:
+			printf("%s\n", _("Invalid"));
+			break;
 		case GSM_Priority_Low:
 			printf("%s\n", _("Low"));
 			break;

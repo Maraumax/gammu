@@ -9,9 +9,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Gammu-docs 1.32.0\n"
-"Report-Msgid-Bugs-To: michal@cihar.com\n"
-"POT-Creation-Date: 2011-02-23 16:58+0100\n"
+"Project-Id-Version: Gammu-docs 1.35.90\n"
+"Report-Msgid-Bugs-To: gammu-users@lists.sourceforge.net\n"
+"POT-Creation-Date: 2014-12-29 11:51+0100\n"
 "PO-Revision-Date: 2011-02-23 16:59+0100\n"
 "Last-Translator: Michal Čihař <michal@cihar.com>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -23,13 +23,13 @@ msgstr ""
 "X-Generator: Pootle 2.0.5\n"
 
 #. type: Title =
-#: README:2
+#: README.rst:2
 #, no-wrap
 msgid "Gammu All Mobile Management Utilities"
 msgstr "Gammu All Mobile Management Utilities"
 
 #. type: Plain text
-#: README:6
+#: README.rst:6
 msgid ""
 "Gammu is library and command line utility for mobile phones. It is released "
 "under GNU GPL version 2."
@@ -38,7 +38,7 @@ msgstr ""
 "telefont. Je vydáno pod GNU GPL verze 2."
 
 #. type: Plain text
-#: README:11
+#: README.rst:11
 msgid ""
 "It has been initiated by Marcin Wiacek and other people. Originally the code "
 "was based on Gnokii <http://www.gnokii.org> and later MyGnokii <http://www."
@@ -50,7 +50,7 @@ msgstr ""
 "mwiacek.com>. Gammu bylo (až do verze 0.58) nazýváno MyGnokii2."
 
 #. type: Plain text
-#: README:14
+#: README.rst:14
 msgid ""
 "Currently the project is lead by Michal Cihar <michal@cihar.com> with help "
 "of many contributors."
@@ -58,19 +58,65 @@ msgstr ""
 "V současné době projekt spravuje Michal Čihař <michal@cihar.com> s pomocí "
 "mnoha přispěvovatelů."
 
+#. type: Labeled list
+#: README.rst:15 README.rst:19 README.rst:23
+#, no-wrap
+msgid ".. image"
+msgstr ".. image"
+
+#. type: Plain text
+#: README.rst:16
+#, fuzzy
+#| msgid "https://travis-ci.org/gammu/gammu.png?branch=master"
+msgid "https://travis-ci.org/gammu/gammu.svg?branch=master"
+msgstr "https://travis-ci.org/gammu/gammu.png?branch=master"
+
+#. type: Plain text
+#: README.rst:18
+#, fuzzy
+#| msgid ":target: https://travis-ci.org/gammu/gammu"
+msgid ":alt: Build status :target: https://travis-ci.org/gammu/gammu"
+msgstr ":target: https://travis-ci.org/gammu/gammu"
+
+#. type: Plain text
+#: README.rst:20
+msgid "https://hosted.weblate.org/widgets/gammu-status-badge.png"
+msgstr "https://hosted.weblate.org/widgets/gammu-status-badge.png"
+
+#. type: Plain text
+#: README.rst:22
+msgid ""
+":alt: Translation status :target: https://hosted.weblate.org/engage/gammu/?"
+"utm_source=widget"
+msgstr ""
+":alt: Translation status :target: https://hosted.weblate.org/engage/gammu/?"
+"utm_source=widget"
+
+#. type: Plain text
+#: README.rst:24
+msgid "https://scan.coverity.com/projects/2890/badge.svg?flat=1"
+msgstr ""
+
+#. type: Plain text
+#: README.rst:26
+#, fuzzy
+#| msgid ":alt: Bitdeli badge :target: https://bitdeli.com/free"
+msgid ":alt: Coverity scan :target: https://scan.coverity.com/projects/2890"
+msgstr ":alt: Bitdeli badge :target: https://bitdeli.com/free"
+
 #. type: Title =
-#: README:17
+#: README.rst:28
 #, no-wrap
 msgid "More information"
 msgstr "Více informací"
 
 #. type: Plain text
-#: README:20
+#: README.rst:31
 msgid "You can find more information on <http://wammu.eu/gammu/>."
 msgstr "Více informací naleznete na <http://cs.wammu.eu/gammu/>."
 
 #. type: Plain text
-#: README:24
+#: README.rst:35
 msgid ""
 "There is also Gammu manual available in docs/manual. You can build HTML "
 "version of it using make manual-html which is viewable online at <http://"
@@ -81,13 +127,13 @@ msgstr ""
 "html, nebo si ji prohlédnout online na <http://wammu.eu/docs/manual/>."
 
 #. type: Title =
-#: README:27
+#: README.rst:38
 #, no-wrap
 msgid "Feedback and bug reports"
 msgstr "Zpětná vazba a hlášení chyb"
 
 #. type: Plain text
-#: README:31
+#: README.rst:42
 msgid ""
 "Any feedback is welcome, see <http://wammu.eu/support/> for information how "
 "to contact developers."
@@ -96,13 +142,13 @@ msgstr ""
 "naleznete na <http://cs.wammu.eu/support/>."
 
 #. type: Title =
-#: README:34
+#: README.rst:45
 #, no-wrap
 msgid "Support developers"
 msgstr "Podpořte vývojáře"
 
 #. type: Plain text
-#: README:36
+#: README.rst:47
 msgid "You can appreciate developers work at <http://wammu.eu/donate/>."
 msgstr "Práci vývojářů můžete ocenit na <http://cs.wammu.eu/donate/>."
 
@@ -120,6 +166,9 @@ msgid ""
 msgstr ""
 "Více informací o kompilaci nalezete v docs/manual-cs/project/install.rst "
 "nebo si přečtěte kapitolu \"Kompilace Gammu\" v Manuálu Gammu."
+
+#~ msgid "https://d2weczhvl823v0.cloudfront.net/gammu/gammu/trend.png"
+#~ msgstr "https://d2weczhvl823v0.cloudfront.net/gammu/gammu/trend.png"
 
 #~ msgid "_gammurc:"
 #~ msgstr "_gammurc:"
@@ -187,8 +236,8 @@ msgstr ""
 #~ "Konfigurační soubor pro gammu může obsahovat několik sekcí - ``[gammu]``, "
 #~ "``[gammu1]``, ``[gammuN]``, ... Každá sekce definuje jedno připojení a ve "
 #~ "výchozím režime gammu postupně zkouší všechny podle čísel. Můžete také "
-#~ "zadat parametrem pro :ref:`gammu`, které číslo sekce (:config:section:`"
-#~ "[gammu]` je číslo 0) má použít a pak se použije jen tato sekce."
+#~ "zadat parametrem pro :ref:`gammu`, které číslo sekce (:config:section:"
+#~ "`[gammu]` je číslo 0) má použít a pak se použije jen tato sekce."
 
 #~ msgid ".. config:section"
 #~ msgstr ".. config:section"
@@ -1820,8 +1869,8 @@ msgstr ""
 
 #~ msgid "stores messages in files, see :ref:`gammu-smsd-files` for details"
 #~ msgstr ""
-#~ "B<FILES> - ukládá zprávy v souborech, pro podrobnosti viz gammu-smsd-files"
-#~ "(7)"
+#~ "B<FILES> - ukládá zprávy v souborech, pro podrobnosti viz gammu-smsd-"
+#~ "files(7)"
 
 #~ msgid ""
 #~ "does not store messages at all, see :ref:`gammu-smsd-null` for details"
@@ -2444,8 +2493,8 @@ msgstr ""
 #~ msgid ""
 #~ "If :config:section:`[include_numbers]` section exists, all values (keys "
 #~ "are ignored) from it are used as allowed phone numbers and no other "
-#~ "message is processed. On the other side, in :config:section:`"
-#~ "[exclude_numbers]` you can specify numbers which you want to skip."
+#~ "message is processed. On the other side, in :config:section:"
+#~ "`[exclude_numbers]` you can specify numbers which you want to skip."
 #~ msgstr ""
 #~ "Pokud existuje sekce [include_numbers], všechny hodnoty z ní (klíče jsou "
 #~ "ignorovány) jsou použity jako povolená čísla a jiné zprávy nejsou "
@@ -2468,8 +2517,8 @@ msgstr ""
 
 #~ msgid ""
 #~ "Similar filtering rules can be used for SMSC number filtering, they just "
-#~ "use different set of configuration options - :config:section:`"
-#~ "[include_smsc]` and"
+#~ "use different set of configuration options - :config:section:"
+#~ "`[include_smsc]` and"
 #~ msgstr ""
 #~ "Podobná pravidla mohou být použita pro filtrování čísel centra zpráv "
 #~ "SMSC, jen používají jiné konfigurační parametry - [include_smsc] a "
@@ -3521,8 +3570,8 @@ msgstr ""
 #~ "[-unicodefiletext file] [-defsound ID] [-defanimation ID] [-tone10 file] "
 #~ "[-tone10long file] [-tone12 file] [-tone12long file] [-toneSE file] [-"
 #~ "toneSElong file] [-fixedbitmap file] [-variablebitmap file] [-"
-#~ "variablebitmaplong file] [-animation frames file1 ...] [-protected number]"
-#~ ">"
+#~ "variablebitmaplong file] [-animation frames file1 ...] [-protected "
+#~ "number]>"
 
 #~ msgid ""
 #~ "Saves EMS sequence. All format specific parameters (like :option:`-"
@@ -6576,8 +6625,8 @@ msgstr ""
 #~ "Type = NumberGeneral\\nEntry\\([0-9][0-9]\\)Text = \"\\+36\\(20\\|30\\|"
 #~ "60\\|70\\)\\n"
 #~ msgstr ""
-#~ "Hledat: Type = NumberGeneral\\enEntry\\e([0-9][0-9]\\e)Text = \"\\e+36\\e"
-#~ "(20\\e|30\\e|60\\e|70\\e)\\en"
+#~ "Hledat: Type = NumberGeneral\\enEntry\\e([0-9][0-9]\\e)Text = \"\\e"
+#~ "+36\\e(20\\e|30\\e|60\\e|70\\e)\\en"
 
 #~ msgid "Type = NumberMobile\\nEntry\\1Text = \"\\+3620"
 #~ msgstr ""
@@ -6591,12 +6640,13 @@ msgstr ""
 #~ "odstranit odpovídající řádku TextUnicode"
 
 #~ msgid ""
-#~ "Type = NumberGeneral\\nEntry\\([0-9][0-9]\\)Text = \"\\+36\\([2367]"
-#~ "0\\)\\([^\\\"]*\\)\"\\nEntry\\([0-9][0-9]\\)TextUnicode = \\([^\\n]*\\)\\n"
+#~ "Type = NumberGeneral\\nEntry\\([0-9][0-9]\\)Text = \"\\"
+#~ "+36\\([2367]0\\)\\([^\\\"]*\\)\"\\nEntry\\([0-9][0-9]\\)TextUnicode = "
+#~ "\\([^\\n]*\\)\\n"
 #~ msgstr ""
-#~ "Hledat: Type = NumberGeneral\\enEntry\\e([0-9][0-9]\\e)Text = \"\\e+36\\e"
-#~ "([2367]0\\e)\\e([^\\e\"]*\\e)\"\\enEntry\\e([0-9][0-9]\\e)TextUnicode = "
-#~ "\\e([^\\en]*\\e)\\en"
+#~ "Hledat: Type = NumberGeneral\\enEntry\\e([0-9][0-9]\\e)Text = \"\\e"
+#~ "+36\\e([2367]0\\e)\\e([^\\e\"]*\\e)\"\\enEntry\\e([0-9]"
+#~ "[0-9]\\e)TextUnicode = \\e([^\\en]*\\e)\\en"
 
 #~ msgid "Type = NumberMobile\\nEntry\\1Text = \"\\+36\\2\\3\"\\n"
 #~ msgstr ""
@@ -7630,8 +7680,8 @@ msgstr ""
 #~ "text] [-unicodefiletext file] [-defsound ID] [-defanimation ID] [-tone10 "
 #~ "file] [-tone10long file] [-tone12 file] [-tone12long file] [-toneSE file] "
 #~ "[-toneSElong file] [-fixedbitmap file] [-variablebitmap file] [-"
-#~ "variablebitmaplong file] [-animation frames file1 ...] [-protected number]"
-#~ ">"
+#~ "variablebitmaplong file] [-animation frames file1 ...] [-protected "
+#~ "number]>"
 #~ msgstr ""
 #~ "B<sendsms EMS>I< destination [-report] [-validity HOUR|6HOURS|DAY|3DAYS|"
 #~ "WEEK|MAX] [-save [-folder number]] [-smscset number] [-smscnumber number] "
@@ -7639,8 +7689,8 @@ msgstr ""
 #~ "text] [-unicodefiletext file] [-defsound ID] [-defanimation ID] [-tone10 "
 #~ "file] [-tone10long file] [-tone12 file] [-tone12long file] [-toneSE file] "
 #~ "[-toneSElong file] [-fixedbitmap file] [-variablebitmap file] [-"
-#~ "variablebitmaplong file] [-animation frames file1 ...] [-protected number]"
-#~ ">"
+#~ "variablebitmaplong file] [-animation frames file1 ...] [-protected "
+#~ "number]>"
 
 #~ msgid ""
 #~ "Sends a message, for description of message specific parameters see "

@@ -11,9 +11,18 @@ projektů Gnokii <http://www.gnokii.org> a pozdějí MyGnokii
 V současné době projekt spravuje Michal Čihař <michal@cihar.com> s pomocí
 mnoha přispěvovatelů.
 
+.. image:: https://travis-ci.org/gammu/gammu.svg?branch=master
+    :alt: Build status :target: https://travis-ci.org/gammu/gammu
+
+.. image:: https://hosted.weblate.org/widgets/gammu-status-badge.png
+    :alt: Translation status :target:
+    https://hosted.weblate.org/engage/gammu/?utm_source=widget
+
+.. image:: https://scan.coverity.com/projects/2890/badge.svg?flat=1
+    :alt: Coverity scan :target: https://scan.coverity.com/projects/2890
 
 Více informací
-================
+==============
 
 Více informací naleznete na <http://cs.wammu.eu/gammu/>.
 
@@ -24,13 +33,13 @@ manual-html, nebo si ji prohlédnout online na
 
 
 Zpětná vazba a hlášení chyb
-================================
+===========================
 
 Jakákoliv zpětná vazba je vítána, informace jak kontaktovat vývojáře
 naleznete na <http://cs.wammu.eu/support/>.
 
 
 Podpořte vývojáře
-=====================
+=================
 
 Práci vývojářů můžete ocenit na <http://cs.wammu.eu/donate/>.

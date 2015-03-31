@@ -32,13 +32,11 @@ There are several po files to translate:
 ``gammu.po``
     Messages used by command line utilities (mostly :ref:`gammu`).
 ``docs.po``
-    Basic documentation shipped withing package (eg. :file:`README` and
+    Basic documentation shipped withing package (eg. :file:`README.rst` and
     :file:`INSTALL` files).
-``manual.po``
-    The Gammu Manual translation (this manual).
 
 
-.. _translation server: http://l10n.cihar.com/projects/gammu/
+.. _translation server: http://hosted.weblate.org/projects/gammu/
 .. _Michal Čihař: mailto:michal@cihar.com
 .. _Gettext: http://en.wikipedia.org/wiki/GNU_gettext\
 .. _po4a: http://po4a.alioth.debian.org/

@@ -40,7 +40,7 @@ import datetime
 import string
 
 # some defines
-VERSION = '1.32.90'
+VERSION = '1.35.90'
 VERSION_TUPLE = tuple(map(int, VERSION.split('.')))
 GAMMU_REQUIRED = VERSION_TUPLE
 PYTHON_REQUIRED = (2,3)
@@ -232,7 +232,7 @@ class build_ext_gammu(distutils.command.build_ext.build_ext, object):
             self.check_pkgconfig()
             self.check_gammu()
             if self.gammu_libs is None:
-                self.linklibs += self.get_pkg_libraries('gammu')
+                self.linklibs += self.get_pkg_libraries('gammu-smsd')
                 self.gammu_libs = self.get_pkg_library_dirs('gammu')
             if self.gammu_incs is None:
                 self.gammu_incs = self.get_pkg_include_dirs('gammu')
@@ -282,6 +282,7 @@ gammumodule = Extension('gammu._gammu',
         'gammu/src/convertors/file.c',
         'gammu/src/convertors/call.c',
         'gammu/src/convertors/wap.c',
+        'gammu/src/convertors/diverts.c',
         'gammu/src/gammu.c',
         'gammu/src/smsd.c',
         ])

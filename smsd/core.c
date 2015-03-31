@@ -69,6 +69,8 @@
 
 const char smsd_name[] = "gammu-smsd";
 
+time_t lastRing=0;
+
 /**
  * Checks whether database schema version matches current one.
  */
@@ -248,12 +250,19 @@ void SMSD_Log(SMSD_DebugLevel level, GSM_SMSDConfig *Config, const char *format,
 	char 		Buffer[65535];
 	va_list		argp;
 #ifdef HAVE_SYSLOG
-        int priority;
+	int priority;
 #endif
 
 	va_start(argp, format);
 	vsprintf(Buffer,format, argp);
 	va_end(argp);
+
+	if (level != DEBUG_ERROR &&
+			level != DEBUG_INFO &&
+			(level & Config->debug_level) == 0) {
+		return;
+	}
+
 
 	switch (Config->log_type) {
 		case SMSD_LOG_EVENTLOG:
@@ -281,12 +290,6 @@ void SMSD_Log(SMSD_DebugLevel level, GSM_SMSDConfig *Config, const char *format,
 #endif
 			break;
 		case SMSD_LOG_FILE:
-			if (level != DEBUG_ERROR &&
-					level != DEBUG_INFO &&
-					(level & Config->debug_level) == 0) {
-				return;
-			}
-
 			GSM_GetCurrentDateTime(&date_time);
 
 			if (Config->use_timestamps) {
@@ -381,6 +384,17 @@ GSM_SMSDConfig *SMSD_NewConfig(const char *name)
 	Config->debug_level = 0;
 	Config->ServiceName = NULL;
 	Config->Service = NULL;
+	Config->IgnoredMessages = 0;
+
+#if defined(HAVE_MYSQL_MYSQL_H)
+	Config->conn.my = NULL;
+#endif
+#if defined(LIBDBI_FOUND)
+	Config->conn.dbi = NULL;
+#endif
+#if defined(HAVE_POSTGRESQL_LIBPQ_FE_H)
+	Config->conn.pg = NULL;
+#endif
 
 	/* Prepare lists */
 	GSM_StringArray_New(&(Config->IncludeNumbersList));
@@ -526,6 +540,7 @@ GSM_Error SMSD_LoadNumbersFile(GSM_SMSDConfig *Config, GSM_StringArray *Array, c
 			if (len == 0) continue;
 			/* Add line to array */
 			if (!GSM_StringArray_Add(Array, buffer)) {
+				fclose(listfd);
 				return ERR_MOREMEMORY;
 			}
 		}
@@ -670,14 +685,18 @@ GSM_Error SMSD_ReadConfig(const char *filename, GSM_SMSDConfig *Config, gboolean
 
 #ifdef HAVE_SHM
 	/* Calculate key for shared memory */
-	if (realpath(filename, fullpath) == NULL) {
+	if (filename == NULL) {
+		strcpy(fullpath, ":default:");
+	} else if (realpath(filename, fullpath) == NULL) {
 		strncpy(fullpath, filename, PATH_MAX);
 		fullpath[PATH_MAX] = 0;
 	}
 	Config->shm_key = ftok(fullpath, SMSD_SHM_KEY);
 #endif
 #ifdef WIN32
-	if (GetFullPathName(filename, sizeof(config_name), config_name, NULL) == 0) {
+	if (filename == NULL) {
+		strcpy(config_name, ":default:");
+	} else if (GetFullPathName(filename, sizeof(config_name), config_name, NULL) == 0) {
 		return FALSE;
 	}
 
@@ -769,6 +788,7 @@ GSM_Error SMSD_ReadConfig(const char *filename, GSM_SMSDConfig *Config, gboolean
 	Config->statusfrequency = INI_GetInt(Config->smsdcfgfile, "smsd", "statusfrequency", 15);
 	Config->loopsleep = INI_GetInt(Config->smsdcfgfile, "smsd", "loopsleep", 1);
 	Config->checksecurity = INI_GetBool(Config->smsdcfgfile, "smsd", "checksecurity", TRUE);
+	Config->hangupcalls = INI_GetBool(Config->smsdcfgfile, "smsd", "hangupcalls", FALSE);
 	Config->checksignal = INI_GetBool(Config->smsdcfgfile, "smsd", "checksignal", TRUE);
 	Config->checkbattery = INI_GetBool(Config->smsdcfgfile, "smsd", "checkbattery", TRUE);
 	Config->enable_send = INI_GetBool(Config->smsdcfgfile, "smsd", "send", TRUE);
@@ -1359,6 +1379,7 @@ gboolean SMSD_ReadDeleteSMS(GSM_SMSDConfig *Config)
 	int i, j;
 
 	/* Read messages from phone */
+	Config->IgnoredMessages = 0;
 	start=TRUE;
 	sms.Number = 0;
 	sms.SMS[0].Location = 0;
@@ -1382,16 +1403,30 @@ gboolean SMSD_ReadDeleteSMS(GSM_SMSDConfig *Config)
 
 					if (GetSMSData[GetSMSNumber] == NULL) {
 						SMSD_Log(DEBUG_ERROR, Config, "Failed to allocate memory");
+						for (i = 0; GetSMSData[i] != NULL; i++) {
+							free(GetSMSData[i]);
+							GetSMSData[i] = NULL;
+						}
+						free(GetSMSData);
 						return FALSE;
 					}
 
 					*(GetSMSData[GetSMSNumber]) = sms;
 					GetSMSNumber++;
 					GetSMSData[GetSMSNumber] = NULL;
+				} else {
+					Config->IgnoredMessages++;
 				}
 				break;
 			default:
 				SMSD_LogError(DEBUG_INFO, Config, "Error getting SMS", error);
+				if (GetSMSData != NULL) {
+					for (i = 0; GetSMSData[i] != NULL; i++) {
+						free(GetSMSData[i]);
+						GetSMSData[i] = NULL;
+					}
+					free(GetSMSData);
+				}
 				return FALSE;
 		}
 		start = FALSE;
@@ -1476,7 +1511,7 @@ gboolean SMSD_CheckSMSStatus(GSM_SMSDConfig *Config)
 	/* First try SMS status */
 	error = GSM_GetSMSStatus(Config->gsm,&SMSStatus);
 	if (error == ERR_NONE) {
-		new_message = (SMSStatus.SIMUsed + SMSStatus.PhoneUsed > 0);
+		new_message = (SMSStatus.SIMUsed + SMSStatus.PhoneUsed - Config->IgnoredMessages > 0);
 	} else if (error == ERR_NOTSUPPORTED || error == ERR_NOTIMPLEMENTED) {
 		/* Fallback to GetNext */
 		sms.Number = 0;
@@ -1785,6 +1820,36 @@ GSM_Error SMSD_FreeSharedMemory(GSM_SMSDConfig *Config, gboolean writable)
 	Config->Status = NULL;
 	return ERR_NONE;
 }
+
+/** handle incoming calls: hang up.
+ */
+void SMSD_IncomingCallCallback(GSM_StateMachine *s, GSM_Call *call, void *user_data) {
+	GSM_SMSDConfig *Config = user_data;
+	switch (call->Status) {
+	case GSM_CALL_IncomingCall: {
+		time_t now = time(NULL);
+		SMSD_Log(DEBUG_INFO, Config, "Incoming call! # avail? %d %s\n", call->CallIDAvailable, DecodeUnicodeString(call->PhoneNumber) );
+		if ( now - lastRing > 5 ) {
+			// avoid multiple hangups.
+			SMSD_Log(DEBUG_INFO, Config, "Incoming call! # hanging up @%ld %ld.\n", now, lastRing);
+			lastRing = now;
+			if (call->CallIDAvailable) {
+				GSM_CancelCall(s, call->CallID, TRUE);
+			} else {
+				GSM_CancelCall(s, 0, TRUE);
+			}
+		}
+		break;
+	}
+	case  GSM_CALL_CallRemoteEnd:
+	case GSM_CALL_CallLocalEnd:
+		SMSD_Log(DEBUG_INFO, Config, "Call ended(%d).\n", call->Status );
+		lastRing = 0;
+		break;
+	default:
+		SMSD_Log(DEBUG_INFO, Config, "Call callback: Unknown status %d\n", call->Status);
+	}
+}
 /**
  * Main loop which takes care of connection to phone and processing of
  * messages.
@@ -1858,6 +1923,13 @@ GSM_Error SMSD_MainLoop(GSM_SMSDConfig *Config, gboolean exit_on_failure, int ma
 					initerrors++;
 					continue;
 				}
+
+				/* handle incoming calls: */
+				if (Config->hangupcalls) {
+					GSM_SetIncomingCallCallback(Config->gsm, SMSD_IncomingCallCallback, Config);
+					GSM_SetIncomingCall(Config->gsm, TRUE);
+				}
+
 				GSM_SetSendSMSStatusCallback(Config->gsm, SMSD_SendSMSStatusCallback, Config);
 				/* On first start we need to initialize some variables */
 				if (first_start) {

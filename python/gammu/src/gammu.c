@@ -28,11 +28,16 @@
 #include <locale.h>
 
 /* Strings */
-#include "../../../helper/string.h"
+#ifdef HAVE_STRING_H
+#include <string.h>
+#endif
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
 
 /* For locking */
 #ifdef WITH_THREAD
-#include "pythread.h"
+#include <pythread.h>
 #endif
 
 /* Convertors between Gammu and Python types */
@@ -2261,7 +2266,7 @@ StateMachine_SetSpeedDial(StateMachineObject *self, PyObject *args, PyObject *kw
     if (Speed.MemoryLocation == INT_INVALID) return NULL;
 
     Speed.MemoryType = GetMemoryTypeFromDict(value, "MemoryType");
-    if (Speed.MemoryType == ENUM_INVALID) return NULL;
+    if (Speed.MemoryType == MEM_INVALID) return NULL;
 
     BEGIN_PHONE_COMM
     error = GSM_SetSpeedDial(self->s, &Speed);
@@ -2405,6 +2410,8 @@ StateMachine_GetSMS(StateMachineObject *self, PyObject *args, PyObject *kwds) {
 
     if (!PyArg_ParseTupleAndKeywords(args, kwds, "II", kwlist, &(sms.SMS[0].Folder), &(sms.SMS[0].Location)))
         return NULL;
+
+    sms.Number = 0;
 
     BEGIN_PHONE_COMM
     error = GSM_GetSMS(self->s, &sms);
@@ -6023,6 +6030,9 @@ gammu_SaveRingtone(PyObject *self, PyObject *args, PyObject *kwds)
     } else if (strcmp(s, "ott") == 0) {
         GSM_SaveRingtoneOtt(f,&ringtone);
     } else {
+        if (closefile) {
+            fclose(f);
+        }
         PyErr_Format(PyExc_ValueError, "Bad value for format: '%s'", s);
         return NULL;
     }

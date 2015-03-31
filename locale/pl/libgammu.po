@@ -5,22 +5,22 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libGammu 1.32.0\n"
-"Report-Msgid-Bugs-To: michal@cihar.com\n"
-"POT-Creation-Date: 2012-08-27 11:26+0200\n"
-"PO-Revision-Date: 2012-08-27 11:39+0200\n"
-"Last-Translator: Michal Čihař <michal@cihar.com>\n"
-"Language-Team: Polish <http://l10n.cihar.com/projects/gammu/libgammu/pl/>\n"
+"Project-Id-Version: libGammu 1.35.90\n"
+"Report-Msgid-Bugs-To: gammu-users@lists.sourceforge.net\n"
+"POT-Creation-Date: 2015-03-03 10:40+0100\n"
+"PO-Revision-Date: 2013-02-23 23:11+0200\n"
+"Last-Translator: Marcin Kozioł <lord_dark@wp.pl>\n"
+"Language-Team: Polish <http://hosted.weblate.org/projects/gammu/libgammu/pl/"
+">\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
-"|| n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 1.2\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 1.5-dev\n"
 
 #: libgammu/gsmcomon.c:84
-#, fuzzy
 msgid "No error."
 msgstr "Brak błędów."
 
@@ -395,7 +395,12 @@ msgstr ""
 msgid "Entry is read only."
 msgstr "Pozycja jest pusta"
 
-#: libgammu/gsmcomon.c:188
+#: libgammu/gsmcomon.c:156
+#, fuzzy
+msgid "Network error."
+msgstr "Brak błędów."
+
+#: libgammu/gsmcomon.c:189
 #, fuzzy
 msgid "Unknown error description."
 msgstr "Nieznany opis błędu."

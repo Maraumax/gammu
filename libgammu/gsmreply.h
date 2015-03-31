@@ -49,6 +49,7 @@ typedef enum {
 	ID_GetSMSFolderStatus,
 	ID_GetSMSStatus,
 	ID_AddSMSFolder,
+	ID_ConfigureNetworkInfo,
 	ID_GetNetworkInfo,
 	ID_GetNetworkCode,
 	ID_GetNetworkName,
@@ -93,6 +94,7 @@ typedef enum {
 	ID_GetCalendarSettings,
 	ID_SetCalendarSettings,
 	ID_GetGPRSPoint,
+	ID_GetGPRSState,
 	ID_SetGPRSPoint,
 	ID_EnableGPRSPoint,
 	ID_DeleteWAPBookmark,
@@ -192,6 +194,8 @@ typedef enum {
    	ID_AlcatelDeleteField,
 	ID_AlcatelCreateField,
 	ID_AlcatelUpdateField,
+
+	ID_SetPower,
 
 	ID_IncomingFrame,
 

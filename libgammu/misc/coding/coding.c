@@ -1319,7 +1319,7 @@ GSM_Error MyGetLine(char *Buffer, size_t *Pos, char *OutBuffer, size_t MaxLen, s
 			} else {
 				if (MergeLines) {
 					/* (Quote printable new line) Does string end with = ? */
-					if (OutBuffer[pos - 1] == '=' && quoted_printable) {
+					if (quoted_printable && pos > 0 && OutBuffer[pos - 1] == '=') {
 						pos--;
 						OutBuffer[pos] = 0;
 						skip = TRUE;
@@ -1463,77 +1463,116 @@ void StringToDouble(char *text, double *d)
 }
 
 /* When char can be converted, convert it from Unicode to UTF8 */
-int EncodeWithUTF8Alphabet(unsigned char mychar1, unsigned char mychar2, char *ret)
+int EncodeWithUTF8Alphabet(unsigned long src, unsigned char *ret)
 {
-	int src = mychar1*256+mychar2;
-
-	/* Unicode 0080-07FF -> UTF8 110xxxxx 10xxxxxx */
-	if (src >=128 && src <=2047) {
+	if (src < 0x80) {
+		ret[0] = src;
+		return 1;
+	} else if (src < 0x800) {
 		ret[0] = 192 + (src / 64);
 		ret[1] = 128 + (src % 64);
 		return 2;
-	}
-	/* Unicode 0800-FFFF -> UTF8 1110xxxx 10xxxxxx 10xxxxxx */
-	if (src >2047) {
-		ret[0] = 224 + (src / 4096);
+	} else if (src < 0x10000) {
+		ret[0] = 224 + (src / (64 * 64));
 		ret[1] = 128 + ((src / 64) % 64);
 		ret[2] = 128 + (src % 64);
 		return 3;
+	} else if (src < 0x200000) {
+		ret[0] = 240 + (src / (64 * 64 * 64));
+		ret[1] = 128 + ((src / (64 * 64)) % 64);
+		ret[2] = 128 + ((src / 64) % 64);
+		ret[3] = 128 + (src % 64);
+		return 4;
+	} else if (src < 0x4000000) {
+		ret[0] = 248 + (src / (64 * 64 * 64 * 64));
+		ret[1] = 128 + ((src / (64 * 64 * 64)) % 64);
+		ret[2] = 128 + ((src / (64 * 64)) % 64);
+		ret[3] = 128 + ((src / 64) % 64);
+		ret[4] = 128 + (src % 64);
+		return 5;
+	} else if (src < 0x80000000L) {
+		ret[0] = 252 + (src / (64 * 64 * 64 * 64 * 64));
+		ret[1] = 128 + ((src / (64 * 64 * 64 * 64)) % 64);
+		ret[2] = 128 + ((src / (64 * 64 * 64)) % 64);
+		ret[3] = 128 + ((src / (64 * 64)) % 64);
+		ret[4] = 128 + ((src / 64) % 64);
+		ret[5] = 128 + (src % 64);
+		return 6;
 	}
 
-	/* Unicode 0000-007F -> UTF8 0xxxxxxx */
-	ret[0] = mychar2;
+	ret[0] = src;
 	return 1;
 }
 
 /* Make UTF8 string from Unicode input string */
 gboolean EncodeUTF8QuotedPrintable(char *dest, const unsigned char *src)
 {
-	int		i,j=0,z,w;
-	unsigned char	mychar[3];
+	size_t i, j=0, z, w, len;
+	unsigned char	mychar[8];
 	gboolean		retval = FALSE;
-	int len;
+	unsigned long value, second;
+
 	len = UnicodeLength(src);
 
 	for (i = 0; i < len; i++) {
-		z = EncodeWithUTF8Alphabet(src[i*2],src[i*2+1],mychar);
-		if (z>1) {
-			for (w=0;w<z;w++) {
-				sprintf(dest+j, "=%02X",mychar[w]);
-				j = j+3;
+		value = src[i * 2] * 256 + src[i * 2 + 1];
+		/* Decode UTF-16 */
+		if (value >= 0xD800 && value <= 0xDBFF && (i + 1) < len) {
+			second = src[(i + 1) * 2] * 256 + src[(i + 1) * 2 + 1];
+			if (second >= 0xDC00 && second <= 0xDFFF) {
+				value = ((value - 0xD800) << 10) + (second - 0xDC00) + 0x010000;
 			}
-			retval  = TRUE;
+		}
+		z = EncodeWithUTF8Alphabet(value, mychar);
+		if (z == 1 && mychar[0] < 32) {
+			/* Need quoted printable for chars < 32 */
+			sprintf(dest + j, "=%02X", mychar[0]);
+			j = j + 3;
+		} else if (z == 1) {
+			memcpy(dest + j, mychar, z);
+			j += z;
 		} else {
-			/* Encode low ASCII chars */
-			if (src[i*2]*256 + src[i*2+1] < 32) {
-				sprintf(dest+j, "=%02X", src[i*2]*256+src[i*2+1]);
-				j = j+3;
-			} else {
-				j += DecodeWithUnicodeAlphabet(((wchar_t)(src[i*2]*256+src[i*2+1])), dest + j);
+			/* Quoted printable unicode */
+			for (w = 0; w < z; w++) {
+				sprintf(dest + j, "=%02X", mychar[w]);
+				j = j + 3;
+			}
+			if (z > 1) {
+				retval = TRUE;
 			}
 	    	}
 	}
-	dest[j]=0;
+	dest[j] = 0;
 	return retval;
 }
 
 gboolean EncodeUTF8(char *dest, const unsigned char *src)
 {
-	int		i,j=0,z;
-	unsigned char	mychar[3];
+	size_t i, j=0, z, len;
+	unsigned char	mychar[8];
 	gboolean		retval = FALSE;
+	unsigned long value, second;
 
-	for (i = 0; i < (int)(UnicodeLength(src)); i++) {
-		z = EncodeWithUTF8Alphabet(src[i*2],src[i*2+1],mychar);
-		if (z>1) {
-			memcpy(dest+j,mychar,z);
-			j+=z;
+	len = UnicodeLength(src);
+
+	for (i = 0; i < len; i++) {
+		value = src[i * 2] * 256 + src[i * 2 + 1];
+		/* Decode UTF-16 */
+		if (value >= 0xD800 && value <= 0xDBFF && (i + 1) < len) {
+			second = src[(i + 1) * 2] * 256 + src[(i + 1) * 2 + 1];
+			if (second >= 0xDC00 && second <= 0xDFFF) {
+				i++;
+				value = ((value - 0xD800) << 10) + (second - 0xDC00) + 0x010000;
+			}
+		}
+		z = EncodeWithUTF8Alphabet(value, mychar);
+		memcpy(dest + j, mychar, z);
+		j += z;
+		if (z > 1) {
 			retval = TRUE;
-		} else {
-			j+= DecodeWithUnicodeAlphabet(((wchar_t)(src[i*2]*256+src[i*2+1])), dest + j);
-	    	}
+		}
 	}
-	dest[j]=0;
+	dest[j] = 0;
 	return retval;
 }
 
@@ -1585,11 +1624,11 @@ void DecodeISO88591QuotedPrintable(unsigned char *dest, const unsigned char *src
 /* Make Unicode string from UTF8 string */
 void DecodeUTF8QuotedPrintable(unsigned char *dest, const char *src, int len)
 {
-	int 		i=0,j=0,z;
+	int 		i,j=0,z;
 	unsigned char	mychar[10];
 	wchar_t		ret;
 
-	while (i<=len) {
+	for (i = 0; i<=len; ) {
 		z=0;
 		while (TRUE) {
 			if (src[z*3+i] != '=' || z*3+i+3>len ||
@@ -1647,7 +1686,7 @@ void DecodeXMLUTF8(unsigned char *dest, const char *src, int len)
 	int tmplen;
 
 	/* Allocate buffer */
-	tmp = (char *)calloc(len + 1, sizeof(char));
+	tmp = (char *)calloc(2 * len, sizeof(char));
 	if (tmp == NULL) {
 		/* We have no memory for XML decoding */
 		DecodeUTF8(dest, src, len);
@@ -1694,7 +1733,7 @@ void DecodeXMLUTF8(unsigned char *dest, const char *src, int len)
 			}
 			dbgprintf(NULL, "Unicode char 0x%04lx\n", c);
 			tmplen = strlen(tmp);
-			tmplen += EncodeWithUTF8Alphabet((c >> 8) & 0xff, c & 0xff, tmp + tmplen);
+			tmplen += EncodeWithUTF8Alphabet(c, tmp + tmplen);
 			tmp[tmplen] = 0;
 		} else if (strcmp(entity, "amp") == 0) {
 			strcat(tmp, "&");

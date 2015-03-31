@@ -15,27 +15,16 @@ sftp nijel,gammu@frs.sourceforge.net <<EOT
 cd /home/frs/project/g/ga/gammu/gammu
 mkdir $REL
 cd $REL
-put Gammu-$REL-Windows-Minimal.exe
-put Gammu-$REL-Windows-Minimal.zip
-put Gammu-$REL-Windows-64bit.exe
-put Gammu-$REL-Windows-64bit.zip
-put Gammu-$REL-Windows.exe
-put Gammu-$REL-Windows.zip
 put gammu-$REL.tar.bz2
 put gammu-$REL.tar.xz
 put gammu-$REL.tar.gz
+put gammu-$REL.zip
 EOT
 
-sftp mort <<EOT
-cd /srv/http/dl.cihar.com/gammu/releases/windows/
-put Gammu-$REL-Windows-Minimal.exe
-put Gammu-$REL-Windows-Minimal.zip
-put Gammu-$REL-Windows-64bit.exe
-put Gammu-$REL-Windows-64bit.zip
-put Gammu-$REL-Windows.exe
-put Gammu-$REL-Windows.zip
+sftp web <<EOT
 cd /srv/http/dl.cihar.com/gammu/releases/
 put gammu-$REL.tar.bz2
 put gammu-$REL.tar.xz
 put gammu-$REL.tar.gz
+put gammu-$REL.zip
 EOT

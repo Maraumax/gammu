@@ -1,5 +1,5 @@
 Gammu Handy Verwaltungszubehör
-===============================
+==============================
 
 Gammu ist eine Programmbibliothek und ein Kommandozeilenwerkzeug für
 Mobiltelefone. Es wird unter der GNU GPL v2 veröffentlicht.
@@ -12,6 +12,15 @@ MyGnokii<http://www.mwiacek.com> Projekten. Gammu hieß früher(vor Version
 Das Projekt wird derzeit von Michal Cihar <michal@cihar.com> mit der Hilfe
 von vielen Unterstützern geleitet.
 
+.. image:: https://travis-ci.org/gammu/gammu.svg?branch=master
+    :alt: Build status :target: https://travis-ci.org/gammu/gammu
+
+.. image:: https://hosted.weblate.org/widgets/gammu-status-badge.png
+    :alt: Translation status :target:
+    https://hosted.weblate.org/engage/gammu/?utm_source=widget
+
+.. image:: https://scan.coverity.com/projects/2890/badge.svg?flat=1
+    :alt: Coverity scan :target: https://scan.coverity.com/projects/2890
 
 weitere Informationen
 =====================
@@ -34,7 +43,7 @@ Kontakt treten können.
 
 
 Entwickler unterstützen
-========================
+=======================
 
 Sie können unter <http://wammu.eu/donate/> Anerkennung für die Arbeit der
 Entwicker zeigen.

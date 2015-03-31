@@ -1062,6 +1062,7 @@ GSM_Error GSM_EncodeVTODO(char *Buffer, const size_t buff_len, size_t *Length, c
 	if (Version == Mozilla_VToDo) {
 		switch (note->Priority) {
 			case GSM_Priority_None	:
+			case GSM_Priority_INVALID:
 				error = VC_StoreLine(Buffer, buff_len, Length,  "PRIORITY:0");
 				if (error != ERR_NONE) return error;
 				break;
@@ -1081,6 +1082,7 @@ GSM_Error GSM_EncodeVTODO(char *Buffer, const size_t buff_len, size_t *Length, c
 	} else {
 		switch (note->Priority) {
 			case GSM_Priority_None	:
+			case GSM_Priority_INVALID:
 				error = VC_StoreLine(Buffer, buff_len, Length,  "PRIORITY:0");
 				if (error != ERR_NONE) return error;
 				break;
@@ -1980,10 +1982,17 @@ GSM_Error GSM_DecodeVCALENDAR_VTODO(GSM_Debug_Info *di, char *Buffer, size_t *Po
 				ToDo->EntriesNum++;
 			}
 			if (ReadVCALText(Line, "PRIORITY", Buff, ToDoVer == Mozilla_VToDo, NULL)) {
-				if (atoi(DecodeUnicodeString(Buff))==3) ToDo->Priority = GSM_Priority_Low;
-				else if (atoi(DecodeUnicodeString(Buff))==2) ToDo->Priority = GSM_Priority_Medium;
-				else if (atoi(DecodeUnicodeString(Buff))==1) ToDo->Priority = GSM_Priority_High;
-				else ToDo->Priority = GSM_Priority_None;
+				if (ToDoVer == Mozilla_VToDo) {
+					if (atoi(DecodeUnicodeString(Buff))>=9) ToDo->Priority = GSM_Priority_High;
+					else if (atoi(DecodeUnicodeString(Buff))>=5) ToDo->Priority = GSM_Priority_Medium;
+					else if (atoi(DecodeUnicodeString(Buff))>=1) ToDo->Priority = GSM_Priority_Low;
+					else ToDo->Priority = GSM_Priority_None;
+				} else {
+					if (atoi(DecodeUnicodeString(Buff))==3) ToDo->Priority = GSM_Priority_Low;
+					else if (atoi(DecodeUnicodeString(Buff))==2) ToDo->Priority = GSM_Priority_Medium;
+					else if (atoi(DecodeUnicodeString(Buff))==1) ToDo->Priority = GSM_Priority_High;
+					else ToDo->Priority = GSM_Priority_None;
+				}
 			}
 			if (strstr(Line,"STATUS:COMPLETED")) {
 				ToDo->Entries[ToDo->EntriesNum].EntryType = TODO_COMPLETED;
